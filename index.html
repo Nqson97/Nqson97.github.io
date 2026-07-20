@@ -770,13 +770,15 @@ function currentCards() {
 
 /* ---------- card front markup (shared by hand + table) ---------- */
 function cardFrontHTML(p) {
+  // referrerpolicy=no-referrer: some game sites (e.g. bloodloop.com) 403 hotlinked
+  // requests that carry a foreign Referer header
   let artContent = p.art;
   if (p.img && p.img2) {
     artContent =
-      `<img src="${p.img}" alt="${p.title} key art" draggable="false" style="width:50%; right:auto">` +
-      `<img src="${p.img2}" alt="" draggable="false" style="width:50%; left:auto; right:0">`;
+      `<img src="${p.img}" alt="${p.title} key art" draggable="false" referrerpolicy="no-referrer" style="width:50%; right:auto">` +
+      `<img src="${p.img2}" alt="" draggable="false" referrerpolicy="no-referrer" style="width:50%; left:auto; right:0">`;
   } else if (p.img) {
-    artContent = `<img src="${p.img}" alt="${p.title} key art" draggable="false">`;
+    artContent = `<img src="${p.img}" alt="${p.title} key art" draggable="false" referrerpolicy="no-referrer">`;
   }
   return `
     <div class="card-front-design">
@@ -1002,10 +1004,10 @@ function enterTaskMode(project) {
 
 function p_bannerArt(project) {
   if (project.img && project.img2) {
-    return `<img src="${project.img}" alt="" style="width:50%">` +
-           `<img src="${project.img2}" alt="" style="width:50%">`;
+    return `<img src="${project.img}" alt="" referrerpolicy="no-referrer" style="width:50%">` +
+           `<img src="${project.img2}" alt="" referrerpolicy="no-referrer" style="width:50%">`;
   }
-  if (project.img) return `<img src="${project.img}" alt="">`;
+  if (project.img) return `<img src="${project.img}" alt="" referrerpolicy="no-referrer">`;
   return `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${project.artBg}">${project.art}</div>`;
 }
 
