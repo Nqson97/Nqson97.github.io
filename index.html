@@ -94,8 +94,8 @@
      ============================================================ */
   .table-area {
     position: relative; z-index: 2;
-    height: calc(100vh - 130px - 235px); /* header ~130, hand ~235 */
-    height: calc(100dvh - 130px - 235px);
+    height: calc(100vh - 130px - 260px); /* header ~130, hand ~260 */
+    height: calc(100dvh - 130px - 260px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -421,20 +421,20 @@
   .hand-area {
     position: fixed;
     bottom: 0; left: 0; right: 0;
-    height: 235px;
+    height: 260px;
     z-index: 10;
     pointer-events: none;
   }
   .hand {
     position: absolute;
-    bottom: 6px;
+    bottom: 32px;
     left: 50%;
     width: 0;
     height: 0;
   }
   .hand-hint {
     position: absolute;
-    bottom: 224px;
+    bottom: 250px;
     width: 100%;
     text-align: center;
     font-size: 11.5px;
@@ -501,12 +501,12 @@
     :root { --card-w: 104px; --card-h: 150px; }
     html, body { overflow-y: auto; }
     header { padding-top: 18px; }
-    .hand-area { height: 172px; }
-    .hand { bottom: 8px; }
-    .hand-hint { bottom: 160px; font-size: 10px; }
+    .hand-area { height: 192px; }
+    .hand { bottom: 26px; }
+    .hand-hint { bottom: 180px; font-size: 10px; }
     .table-area {
-      height: calc(100vh - 118px - 172px);
-      height: calc(100dvh - 118px - 172px);
+      height: calc(100vh - 118px - 192px);
+      height: calc(100dvh - 118px - 192px);
       min-height: 360px;
       padding: 8px 12px;
     }
