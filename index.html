@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Son Nguyen Quoc — Senior Game Designer</title>
+<style>
+  /* ============================================================
+     THEME
+     ============================================================ */
+  :root {
+    --bg-1: #0d0f1a;
+    --bg-2: #151a2e;
+    --felt-1: #101528;
+    --felt-2: #0a0d1c;
+    --gold: #d4af6a;
+    --gold-soft: rgba(212, 175, 106, 0.35);
+    --ink: #e8e6df;
+    --ink-dim: #9a97a8;
+    --card-w: 150px;
+    --card-h: 215px;
+    --card-radius: 12px;
+    --font-display: Georgia, 'Times New Roman', serif;
+    --font-body: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: var(--font-body);
+    background:
+      radial-gradient(1200px 700px at 50% -10%, #1c2340 0%, transparent 60%),
+      radial-gradient(900px 500px at 85% 110%, #251a33 0%, transparent 55%),
+      linear-gradient(180deg, var(--bg-1), var(--bg-2));
+    color: var(--ink);
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* faint starfield */
+  .stars {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  }
+  .stars span {
+    position: absolute;
+    width: 2px; height: 2px; border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    animation: twinkle 4s ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.15; }
+    50% { opacity: 0.7; }
+  }
+
+  /* ============================================================
+     HEADER
+     ============================================================ */
+  header {
+    position: relative; z-index: 5;
+    text-align: center;
+    padding: 26px 20px 6px;
+  }
+  header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(26px, 4vw, 40px);
+    letter-spacing: 3px;
+    font-weight: 400;
+  }
+  header h1 .accent { color: var(--gold); }
+  header .tagline {
+    margin-top: 6px;
+    color: var(--ink-dim);
+    font-size: clamp(12px, 1.5vw, 15px);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  header .links {
+    margin-top: 10px;
+    display: flex; gap: 18px; justify-content: center;
+    font-size: 13px;
+  }
+  header .links a {
+    color: var(--ink-dim); text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+    transition: color .2s, border-color .2s;
+  }
+  header .links a:hover { color: var(--gold); border-color: var(--gold-soft); }
+
+  /* ============================================================
+     TABLE / DROP FIELD
+     ============================================================ */
+  .table-area {
+    position: relative; z-index: 2;
+    height: calc(100vh - 130px - 190px); /* header ~130, hand ~190 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 4vw;
+  }
+
+  .field {
+    position: relative;
+    width: min(980px, 100%);
+    height: 100%;
+    max-height: 480px;
+    border-radius: 22px;
+    background:
+      radial-gradient(ellipse at 50% 40%, var(--felt-1), var(--felt-2) 85%);
+    border: 2px dashed rgba(212, 175, 106, 0.25);
+    box-shadow:
+      inset 0 0 60px rgba(0,0,0,0.55),
+      0 10px 40px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color .25s, box-shadow .25s, background .25s;
+  }
+  .field.highlight {
+    border-color: var(--gold);
+    box-shadow:
+      inset 0 0 80px rgba(212, 175, 106, 0.12),
+      0 0 45px rgba(212, 175, 106, 0.18),
+      0 10px 40px rgba(0,0,0,0.4);
+  }
+
+  .field-hint {
+    text-align: center;
+    color: var(--ink-dim);
+    pointer-events: none;
+    transition: opacity .3s;
+  }
+  .field-hint .glyph {
+    font-size: 44px;
+    opacity: .55;
+    display: block;
+    margin-bottom: 12px;
+    animation: floaty 3s ease-in-out infinite;
+  }
+  @keyframes floaty {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-9px); }
+  }
+  .field-hint .msg {
+    font-family: var(--font-display);
+    font-size: clamp(15px, 2vw, 20px);
+    letter-spacing: 1.5px;
+  }
+  .field-hint .sub {
+    margin-top: 6px;
+    font-size: 12.5px;
+    letter-spacing: 1px;
+    opacity: .7;
+  }
+  .field.occupied .field-hint { opacity: 0; }
+
+  /* ---------- active project banner (task mode) ---------- */
+  .project-banner {
+    position: absolute;
+    top: 12px; left: 50%;
+    transform: translate(-50%, -180%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: calc(100% - 32px);
+    padding: 8px 10px 8px 8px;
+    background: rgba(8, 10, 22, 0.72);
+    border: 1px solid var(--gold-soft);
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+    z-index: 6;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform .5s cubic-bezier(.3, .8, .3, 1.1), opacity .35s;
+  }
+  .field.task-mode .project-banner {
+    transform: translate(-50%, 0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .pb-thumb {
+    width: 58px; height: 36px;
+    border-radius: 7px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 19px;
+    border: 1px solid rgba(212, 175, 106, 0.35);
+  }
+  .pb-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+  }
+  .pb-info { min-width: 0; }
+  .pb-title {
+    font-family: var(--font-display);
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pb-sub {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: .85;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pb-back {
+    flex-shrink: 0;
+    padding: 7px 13px;
+    font-size: 11px;
+  }
+  .field.task-mode .showcase { padding-top: 68px; }
+  @media (max-width: 760px) {
+    .pb-title { font-size: 12.5px; }
+    .pb-thumb { width: 44px; height: 28px; font-size: 15px; }
+    .field.task-mode .showcase { padding-top: 76px; }
+  }
+
+  /* ---------- played card + detail sheet ---------- */
+  .showcase {
+    position: absolute; inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(18px, 3.5vw, 44px);
+    padding: clamp(14px, 3vw, 34px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .35s ease .1s;
+  }
+  .field.occupied .showcase { opacity: 1; pointer-events: auto; }
+
+  .played-slot { perspective: 1100px; flex-shrink: 0; }
+
+  .played-card {
+    width: clamp(150px, 19vw, 205px);
+    aspect-ratio: 150 / 215;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform .6s cubic-bezier(.4, .1, .2, 1);
+    transform: rotateY(180deg);
+  }
+  .field.occupied .played-card.flipped { transform: rotateY(0deg); }
+
+  .played-card .face {
+    position: absolute; inset: 0;
+    border-radius: var(--card-radius);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    overflow: hidden;
+  }
+  .played-card .face.back { transform: rotateY(180deg); }
+
+  .detail {
+    max-width: 480px;
+    min-width: 0;
+    animation: detailIn .5s ease .35s both;
+  }
+  @keyframes detailIn {
+    from { opacity: 0; transform: translateX(18px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  .detail .kicker {
+    font-size: 11.5px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .detail h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(22px, 3vw, 32px);
+    margin-bottom: 10px;
+  }
+  .detail p {
+    color: var(--ink-dim);
+    font-size: clamp(13px, 1.5vw, 14.5px);
+    line-height: 1.65;
+    margin-bottom: 14px;
+  }
+  .detail .tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 18px;
+  }
+  .detail .tags span {
+    font-size: 11.5px;
+    letter-spacing: 0.5px;
+    padding: 4px 11px;
+    border: 1px solid var(--gold-soft);
+    border-radius: 999px;
+    color: var(--gold);
+  }
+  .detail .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .2s, background .2s;
+  }
+  .btn:active { transform: scale(.96); }
+  .btn-primary {
+    background: linear-gradient(160deg, #e3c17e, #b8924e);
+    border: none;
+    color: #1a1408;
+    font-weight: 600;
+  }
+  .btn-primary:hover { box-shadow: 0 4px 20px rgba(212, 175, 106, 0.35); }
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(232, 230, 223, 0.25);
+    color: var(--ink-dim);
+  }
+  .btn-ghost:hover { border-color: var(--ink); color: var(--ink); }
+
+  /* ============================================================
+     CARD (shared front/back visuals)
+     ============================================================ */
+  .card-back-design {
+    width: 100%; height: 100%;
+    border-radius: var(--card-radius);
+    background:
+      repeating-linear-gradient(45deg,
+        rgba(212,175,106,0.07) 0 2px, transparent 2px 11px),
+      repeating-linear-gradient(-45deg,
+        rgba(212,175,106,0.07) 0 2px, transparent 2px 11px),
+      linear-gradient(160deg, #1e2440, #131730);
+    border: 2px solid rgba(212, 175, 106, 0.45);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .card-back-design::before {
+    content: '';
+    position: absolute; inset: 9px;
+    border: 1px solid rgba(212, 175, 106, 0.3);
+    border-radius: calc(var(--card-radius) - 5px);
+  }
+  .card-back-design .emblem {
+    font-family: var(--font-display);
+    font-size: 30px;
+    color: var(--gold);
+    opacity: .85;
+  }
+
+  .card-front-design {
+    width: 100%; height: 100%;
+    border-radius: var(--card-radius);
+    border: 2px solid rgba(212, 175, 106, 0.5);
+    background: linear-gradient(175deg, #232a4a 0%, #161b33 60%, #10142a 100%);
+    display: flex; flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-front-design .art {
+    flex: 1.25;
+    margin: 8px 8px 0;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 42px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-front-design .art::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.35));
+  }
+  .card-front-design .art img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .card-front-design .label {
+    flex: 1;
+    padding: 9px 10px 10px;
+    display: flex; flex-direction: column; justify-content: center;
+    text-align: center;
+  }
+  .card-front-design .label .name {
+    font-family: var(--font-display);
+    font-size: 14.5px;
+    letter-spacing: 0.5px;
+    color: var(--ink);
+    line-height: 1.25;
+  }
+  .card-front-design .label .type {
+    margin-top: 5px;
+    font-size: 9.5px;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: .85;
+  }
+  .card-front-design .corner {
+    position: absolute; top: 6px; left: 8px;
+    font-family: var(--font-display);
+    font-size: 13px;
+    color: var(--gold);
+    opacity: .9;
+    text-shadow: 0 1px 3px rgba(0,0,0,.6);
+    z-index: 2;
+  }
+
+  /* ============================================================
+     HAND
+     ============================================================ */
+  .hand-area {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 190px;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .hand {
+    position: absolute;
+    bottom: -46px;
+    left: 50%;
+    width: 0;
+    height: 0;
+  }
+  .hand-hint {
+    position: absolute;
+    bottom: 168px;
+    width: 100%;
+    text-align: center;
+    font-size: 11.5px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    opacity: .8;
+    pointer-events: none;
+    transition: opacity .3s;
+  }
+
+  .card {
+    position: absolute;
+    width: var(--card-w);
+    height: var(--card-h);
+    left: calc(var(--card-w) / -2);
+    bottom: 0;
+    cursor: grab;
+    pointer-events: auto;
+    transform-origin: 50% 120%;
+    transition: transform .35s cubic-bezier(.3, .9, .35, 1.15), filter .25s;
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5));
+    touch-action: none;
+    border-radius: var(--card-radius);
+  }
+  .card:hover, .card:focus-visible {
+    filter: drop-shadow(0 14px 26px rgba(0,0,0,0.65)) brightness(1.12);
+    z-index: 50 !important;
+  }
+  .card:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+  .card.dragging {
+    position: fixed;
+    left: 0; top: 0; bottom: auto;
+    margin: 0;
+    transition: none;
+    cursor: grabbing;
+    z-index: 999 !important;
+    transform-origin: 50% 50%;
+    filter: drop-shadow(0 22px 40px rgba(0,0,0,0.7)) brightness(1.1);
+  }
+  .card.returning {
+    transition: transform .45s cubic-bezier(.3, .8, .3, 1.1);
+  }
+  .card.in-play {
+    display: none;
+  }
+  .card.dealt-in {
+    animation: dealIn .5s cubic-bezier(.25, .8, .3, 1.1) both;
+  }
+  @keyframes dealIn {
+    from {
+      transform: translate(40vw, -55vh) rotate(50deg) scale(.6);
+      opacity: 0;
+    }
+  }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 760px) {
+    :root { --card-w: 104px; --card-h: 150px; }
+    html, body { overflow-y: auto; }
+    header { padding-top: 18px; }
+    .hand-area { height: 140px; }
+    .hand { bottom: -34px; }
+    .hand-hint { bottom: 122px; font-size: 10px; }
+    .table-area {
+      height: calc(100vh - 118px - 140px);
+      min-height: 380px;
+      padding: 8px 12px;
+    }
+    .field { max-height: none; }
+    .showcase {
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+      justify-content: flex-start;
+      padding-top: 18px;
+    }
+    .played-card { width: 118px; }
+    .detail { text-align: center; }
+    .detail .tags, .detail .actions { justify-content: center; }
+    .card-front-design .art { font-size: 30px; }
+    .card-front-design .label .name { font-size: 11px; }
+    .card-front-design .label .type { font-size: 8px; letter-spacing: 1.2px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<header>
+  <h1>SON <span class="accent">NGUYEN QUOC</span></h1>
+  <div class="tagline">Senior Game Designer · Ho Chi Minh City, Vietnam</div>
+  <div class="links">
+    <a href="https://www.linkedin.com/in/sonquocng" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="mailto:nqson140697@gmail.com">Email</a>
+    <a href="tel:+84933140697">+84 933 140 697</a>
+    <a href="#" target="_blank" rel="noopener">Resume</a>
+  </div>
+</header>
+
+<main class="table-area">
+  <div class="field" id="field">
+    <div class="project-banner" id="projectBanner">
+      <div class="pb-thumb" id="pbThumb"></div>
+      <div class="pb-info">
+        <div class="pb-title" id="pbTitle"></div>
+        <div class="pb-sub" id="pbSub"></div>
+      </div>
+      <button class="btn btn-ghost pb-back" id="pbBack">◂ All Projects</button>
+    </div>
+    <div class="field-hint">
+      <span class="glyph">🃏</span>
+      <div class="msg" id="fieldMsg">Drag a card onto the table</div>
+      <div class="sub" id="fieldSub">— or click a card to play it —</div>
+    </div>
+
+    <div class="showcase" id="showcase">
+      <div class="played-slot">
+        <div class="played-card" id="playedCard">
+          <div class="face front" id="playedFront"></div>
+          <div class="face back"><div class="card-back-design"><span class="emblem">✦</span></div></div>
+        </div>
+      </div>
+      <div class="detail" id="detail"></div>
+    </div>
+  </div>
+</main>
+
+<div class="hand-area">
+  <div class="hand-hint" id="handHint">Your hand — pick a project</div>
+  <div class="hand" id="hand"></div>
+</div>
+
+<script>
+/* ==============================================================
+   PROJECT DATA  — edit this array to populate your real work.
+   Each entry becomes one card in the hand.
+   art:      emoji shown as placeholder art (swap for an <img> later)
+   artBg:    CSS background for the card art area
+   ============================================================== */
+const PROJECTS = [
+  {
+    id: 'puzzle-titles',
+    title: 'Casual Puzzle & Sorting Titles',
+    type: 'Prime Tech · Sr. Game Designer',
+    year: '2026 – Now',
+    art: '🧩',
+    artBg: 'linear-gradient(140deg, #7c3aed, #db2777)',
+    description: 'Owning the full design lifecycle of globally scaled casual and hyper-casual puzzle & sorting titles, from concept to live-ops. I design core mechanics, difficulty curves, and meta-progression (rewards, missions, events), balance the in-game economy with a data-driven approach to lift D1–D7 retention, and tune hybrid IAP + ad monetization to grow LTV and support UA scaling.',
+    tags: ['Live-ops', 'Economy Balance', 'Meta-progression', 'Hybrid Monetization', 'GDDs'],
+    link: '#',
+    linkLabel: 'View Project',
+    tasks: [
+      { title: 'Core Loop & Difficulty', art: '🔄', description: 'Designed core mechanics and progression systems for sorting/logic games — game flow, difficulty curves, and pacing tuned to stay challenging but fair from the first session onward.' },
+      { title: 'Meta-progression', art: '🏆', description: 'Designed the meta layer — rewards, missions, and live events that give players long-term goals beyond the core puzzle loop.' },
+      { title: 'Economy & Retention', art: '📈', description: 'Balanced the in-game economy and pacing to maximize D1–D7 retention and engagement, using a data-driven approach to refine game balance sheets.' },
+      { title: 'Hybrid Monetization', art: '💰', description: 'Optimized monetization with a hybrid of IAP, interstitial, and rewarded ads to increase LTV and support UA scaling.' },
+      { title: 'Concepts & GDDs', art: '📋', description: 'Translated market trends into fresh puzzle mechanics and high-potential game concepts with PM, Art, and Engineering — and maintained comprehensive GDDs and feature specs communicating UX game loops and technical requirements.' }
+    ]
+  },
+  {
+    id: 'bdg-aa-title',
+    title: 'Undisclosed AA Title',
+    type: 'Big Dumb Game · Tech Designer',
+    year: '2026 – Now',
+    art: '⚔️',
+    artBg: 'linear-gradient(140deg, #334155, #0f172a)',
+    description: 'Leading design of core systems, gameplay mechanics, and character ability trees for a high-fidelity AA experience in development. I implement complex gameplay features directly in Unreal Engine 5 with a focus on modularity and performance, rapidly prototype new features, and keep systems and character stats in tight balance for polished "game feel".',
+    tags: ['Unreal Engine 5', 'Systems Design', 'Ability Trees', 'Prototyping', 'Balancing'],
+    link: '#',
+    linkLabel: 'View Project',
+    tasks: [
+      { title: 'Core Systems Design', art: '🧠', description: 'Leading the design of core systems, gameplay mechanics, and character ability trees for a high-fidelity AA experience.' },
+      { title: 'UE5 Implementation', art: '⚙️', description: 'Directly implementing complex gameplay features in Unreal Engine 5 with a focus on modularity and performance.' },
+      { title: 'Systems Balancing', art: '⚖️', description: 'Establishing tight balance between game systems and character stats to ensure a polished, engaging experience.' },
+      { title: 'Rapid Prototyping', art: '🧪', description: 'Rapidly prototyping new features and refining core loops to sharpen player engagement and "game feel".' },
+      { title: 'Creative–Tech Bridge', art: '🤝', description: 'Collaborating with Art and Engineering to bridge creative vision with technical feasibility, ensuring high-quality feature delivery.' }
+    ]
+  },
+  {
+    id: 'sparx-aa-projects',
+    title: 'Shooter, Survival & Boss Design',
+    type: 'Virtuos Sparx* · Tech Designer',
+    year: '2024 – 2025',
+    art: '🎯',
+    artBg: 'linear-gradient(140deg, #166534, #052e16)',
+    description: 'Three undisclosed AA projects at Virtuos Sparx*. On a 3rd-person multiplayer shooter I owned system, mechanic, and character ability design and implemented most gameplay abilities. On a survival game I designed progression, crafting, base-building, and monster capture/taming systems. I also built a 3-phase boss fight end-to-end, implementing its combat behavior with Unreal Behavior Trees.',
+    tags: ['Unreal Engine 5', 'Unity 5', 'Multiplayer', 'Boss Design', 'Behavior Trees', 'Figma'],
+    link: '#',
+    linkLabel: 'View Project',
+    tasks: [
+      { title: 'Shooter Ability Design', art: '🔫', description: 'On an undisclosed 3rd-person multiplayer shooter (2025): responsible for system design, mechanic design, and character ability design — and implemented the majority of gameplay mechanics and abilities myself.' },
+      { title: 'Multiplayer Balance', art: '⚖️', description: 'Focused on multiplayer functionality and maintaining balance between systems and characters across the roster.' },
+      { title: 'Survival Systems', art: '🏕️', description: 'On an undisclosed survival game (2024): developed core survival mechanics including crafting, resource gathering, and base-building.' },
+      { title: 'Capture & Taming', art: '🐲', description: 'Created monster capture and taming systems to expand strategic gameplay, and designed player progression balancing challenge with long-term engagement.' },
+      { title: '3-Phase Boss Fight', art: '👹', description: "On an undisclosed 3rd-person game (2024): designed the boss's move set and combat behavior, structured a 3-phase fight with distinct mechanics per phase, and implemented its decision-making with Unreal Behavior Trees." }
+    ]
+  },
+  {
+    id: 'bloodloop',
+    title: 'BloodLoop',
+    type: '7 Digital Labs · Tech Designer',
+    year: '2023',
+    art: '🩸',
+    artBg: 'linear-gradient(140deg, #9f1239, #4c0519)',
+    img: 'https://www.bloodloop.com/static/media/characters.754e12cac67c868dda56.png',
+    description: 'Free-to-play 5v5 hero shooter set in a dystopian future, by 7 Digital Labs / Ragnarok Games. I designed and balanced core game mechanics and character abilities, worked on character and weapon design, and created and implemented character abilities directly in Unreal Engine 5.',
+    tags: ['Unreal Engine 5', 'Hero Abilities', 'Weapon Design', 'Maya'],
+    link: 'https://store.epicgames.com/en-US/p/bloodloop-2c05b9',
+    linkLabel: 'Epic Games Store',
+    tasks: [
+      { title: 'Core Mechanics & Balance', art: '🎯', img: 'https://www.bloodloop.com/static/media/Krakenberg@2x.7d87e373c64f42b3cc86.png', description: 'Designed and balanced core game mechanics and character abilities for 5v5 hero-shooter combat.' },
+      { title: 'Characters & Weapons', art: '🗡️', img: 'https://www.bloodloop.com/static/media/Wendigo@2x.42e50a4a203197a28e67.png', description: 'Worked on character design and weapons across the hero roster.' },
+      { title: 'UE5 Ability Implementation', art: '⚙️', img: 'https://www.bloodloop.com/static/media/Satellite@2x.1810913f6b76f04dd632.png', description: 'Created and implemented character abilities directly in Unreal Engine 5.' }
+    ]
+  },
+  {
+    id: 'mahokenshi',
+    title: 'Mahokenshi',
+    type: 'Game Source Studio · Game Designer',
+    year: '2022',
+    art: '🎴',
+    artBg: 'linear-gradient(140deg, #0d9488, #134e4a)',
+    img: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1717640/header.jpg',
+    description: 'Card-battling tactical adventure set in a samurai fantasy world, built in Unity. I designed and balanced core mechanics and character abilities, developed level layouts and challenges, created and implemented character cards and UI elements in-engine, and worked on quest design integrating the cards into gameplay.',
+    tags: ['Unity', 'Card Design', 'Level Design', 'Quest Design', 'UI/UX'],
+    link: 'https://store.steampowered.com/app/1717640/Mahokenshi/',
+    linkLabel: 'View on Steam',
+    tasks: [
+      { title: 'Mechanics & Abilities', art: '⚔️', img: 'https://mahokenshi.com/wp-content/uploads/2021/09/3-745x1024.png', description: 'Designed and balanced core game mechanics and character abilities for the samurai deckbuilder.' },
+      { title: 'Level & Challenge Design', art: '🗺️', img: 'https://mahokenshi.com/wp-content/uploads/2021/09/ss_7b2be755a266b0d11a5a4e47ba33b5ddc7eeb857.1920x1080.jpg', description: 'Developed level layouts and the challenges players face across them.' },
+      { title: 'Cards & UI in Unity', art: '🎴', img: 'https://mahokenshi.com/wp-content/uploads/2021/09/ss_2969ae45b0d7221a62e7bccdfcaa1c27959ea19f.1920x1080.jpg', description: 'Created and implemented character cards and UI elements in Unity, collaborating on UI/UX for card elements and level layouts.' },
+      { title: 'Quest Design', art: '📜', img: 'https://mahokenshi.com/wp-content/uploads/2021/09/ss_345beae61ad5df1f972b334cecff47bdfb3fd59f.1920x1080.jpg', description: 'Worked on quest design and integrated character cards into gameplay.' }
+    ]
+  },
+  {
+    id: 'midnight-suns',
+    title: "Marvel's Midnight Suns",
+    type: 'Firaxis Games · Cinematic Designer',
+    year: '2021',
+    art: '🦸',
+    artBg: 'linear-gradient(140deg, #1e3a8a, #7f1d1d)',
+    img: 'https://cdn.cloudflare.steamstatic.com/steam/apps/368260/header.jpg',
+    description: "Tactical RPG from Firaxis Games. As Cinematic Designer I implemented animation and camera placements from Maya into Unreal Sequencer, managed character spawning and effect alignment in cutscenes, kept prop placement clean across sequences, and collaborated with artists to resolve animation issues.",
+    tags: ['Unreal Engine 4', 'Sequencer', 'Maya', 'Cinematics'],
+    link: 'https://store.steampowered.com/app/368260/Marvels_Midnight_Suns/',
+    linkLabel: 'View on Steam',
+    tasks: [
+      { title: 'Maya → Sequencer', art: '🎬', img: 'https://assets.2k.com/1a6ngf98576c/2KicH4jvEWcoh6En9mLIso/3f43a15ddea092bd6880902e29db371e/Hunter_630.jpg', description: 'Implemented animation and camera placements from Maya into Unreal Sequencer for cinematic sequences.' },
+      { title: 'Cutscene Assembly', art: '🎭', img: 'https://assets.2k.com/1a6ngf98576c/LXLY3iRIlyfpNKLyATNgd/3e3a32482ea117c4321b3382069eed15/IronMan_630.jpg', description: 'Managed character spawning and ensured all effects were properly placed and aligned with each cutscene.' },
+      { title: 'Scene Integrity', art: '🧹', img: 'https://assets.2k.com/1a6ngf98576c/6UwoAsmwLsOtuu5PkvHZpA/d7f5235e816fec7657e1cedf06439b48/Blade_630.jpg', description: 'Ensured prop placement never interfered with cutscenes across sequences.' },
+      { title: 'Artist Collaboration', art: '🤝', img: 'https://assets.2k.com/1a6ngf98576c/2R9qqglYdo9YKDfzvbgKyJ/f95d1757b96169f8ae99eb730b45daa7/GhostRider_630.jpg', description: 'Collaborated with artists to resolve animation and prop-placement issues.' }
+    ]
+  },
+  {
+    id: 'cosmic-shake',
+    title: 'SpongeBob: The Cosmic Shake',
+    type: 'Purple Lamp · Cinematic Designer',
+    year: '2021',
+    art: '🍍',
+    artBg: 'linear-gradient(140deg, #ca8a04, #0e7490)',
+    img: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1282150/header.jpg',
+    description: "3D platformer starring SpongeBob SquarePants. I worked on camera angles and shot composition for cinematic sequences, environmental storytelling and set-dressing, and prop placement — contributing cinematics that support the game's narrative and a visually engaging world.",
+    tags: ['Unreal Engine 4', 'Cinematics', 'Set-dressing', 'Substance Designer', 'Maya'],
+    link: 'https://store.steampowered.com/app/1282150/SpongeBob_SquarePants_The_Cosmic_Shake/',
+    linkLabel: 'View on Steam',
+    tasks: [
+      { title: 'Camera & Shot Composition', art: '🎥', img: 'https://cosmicshake.thqnordic.com/game-sites/cosmicshake/content/feature-showcase-1.png', description: 'Worked on camera angles and shot composition for cinematic sequences.' },
+      { title: 'Set-dressing & Environments', art: '🏝️', img: 'https://cosmicshake.thqnordic.com/game-sites/cosmicshake/content/feature-showcase-2.jpg', description: 'Assisted in set-dressing and environmental storytelling to create immersive, visually engaging game environments.' },
+      { title: 'Narrative Cinematics', art: '🎬', img: 'https://cosmicshake.thqnordic.com/game-sites/cosmicshake/content/feature-showcase-3.png', description: "Contributed to the creation of cinematics that support the game's narrative and enrich the player experience." }
+    ]
+  },
+  {
+    id: 'dark-pictures',
+    title: 'Little Hope & House of Ashes',
+    type: 'Supermassive · Design Integrator',
+    year: '2019 – 2020',
+    art: '🕯️',
+    artBg: 'linear-gradient(140deg, #44403c, #1c1917)',
+    img: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1194630/header.jpg',
+    img2: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1281590/header.jpg',
+    description: 'Two entries in The Dark Pictures Anthology by Supermassive Games. I integrated gameplay, cinematics, mechanics, and levels, implemented the branching narrative system that drives the anthology\'s player-choice horror, worked on level layouts and interaction design, and built prototypes and gameplay features with Unreal Blueprints.',
+    tags: ['Unreal Engine 4', 'Branching Narrative', 'Blueprints', 'Level Design'],
+    link: 'https://store.steampowered.com/app/1194630/The_Dark_Pictures_Anthology_Little_Hope/',
+    linkLabel: 'Little Hope on Steam',
+    link2: 'https://store.steampowered.com/app/1281590/The_Dark_Pictures_Anthology_House_of_Ashes/',
+    link2Label: 'House of Ashes on Steam',
+    tasks: [
+      { title: 'Gameplay Integration', art: '🧩', img: 'https://www.thedarkpictures.com/media/udmpgudf/01_shottorep_5plyblechars_a1-2-2.jpg?width=480', description: 'Integrated gameplay elements, cinematic aspects, mechanics, and levels across both titles.' },
+      { title: 'Branching Narrative', art: '🌿', img: 'https://www.thedarkpictures.com/media/xz0h3u1p/carver-with-mary_2.jpg?width=480', description: "Implemented the branching narrative system that drives the anthology's player-choice horror." },
+      { title: 'Levels & Interactions', art: '🚪', img: 'https://www.thedarkpictures.com/media/w34lkch1/entering-little-hope.jpg?width=480', description: 'Worked on level layouts and interaction designs.' },
+      { title: 'Blueprint Prototypes', art: '🧰', img: 'https://www.thedarkpictures.com/media/fujj0ukj/alone_emergefromrubble_char2.png?width=480', description: 'Built prototypes and gameplay features using Unreal Blueprints.' }
+    ]
+  }
+];
+
+/* ============================================================== */
+
+const hand      = document.getElementById('hand');
+const field     = document.getElementById('field');
+const showcase  = document.getElementById('showcase');
+const playedCard  = document.getElementById('playedCard');
+const playedFront = document.getElementById('playedFront');
+const detail    = document.getElementById('detail');
+const handHint  = document.getElementById('handHint');
+const fieldMsg  = document.getElementById('fieldMsg');
+const fieldSub  = document.getElementById('fieldSub');
+const pbThumb   = document.getElementById('pbThumb');
+const pbTitle   = document.getElementById('pbTitle');
+const pbSub     = document.getElementById('pbSub');
+const pbBack    = document.getElementById('pbBack');
+
+let activeCardId = null;      // card currently on the table
+let mode = 'projects';        // 'projects' | 'tasks'
+let taskProject = null;       // project whose tasks are in the hand
+let taskCards = [];           // generated task-card list for taskProject
+
+function currentCards() {
+  return mode === 'projects' ? PROJECTS : taskCards;
+}
+
+/* ---------- starfield ---------- */
+(() => {
+  const stars = document.getElementById('stars');
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('span');
+    s.style.left = (i * 37 % 100) + '%';
+    s.style.top  = (i * 53 % 100) + '%';
+    s.style.animationDelay = (i % 10) * 0.4 + 's';
+    s.style.opacity = 0.2 + (i % 5) * 0.1;
+    stars.appendChild(s);
+  }
+})();
+
+/* ---------- card front markup (shared by hand + table) ---------- */
+function cardFrontHTML(p) {
+  let artContent = p.art;
+  if (p.img && p.img2) {
+    artContent =
+      `<img src="${p.img}" alt="${p.title} key art" draggable="false" style="width:50%; right:auto">` +
+      `<img src="${p.img2}" alt="" draggable="false" style="width:50%; left:auto; right:0">`;
+  } else if (p.img) {
+    artContent = `<img src="${p.img}" alt="${p.title} key art" draggable="false">`;
+  }
+  return `
+    <div class="card-front-design">
+      <span class="corner">✦</span>
+      <div class="art" style="background:${p.artBg}">${artContent}</div>
+      <div class="label">
+        <div class="name">${p.title}</div>
+        <div class="type">${p.type}</div>
+      </div>
+    </div>`;
+}
+
+/* ---------- build hand (projects or tasks, depending on mode) ---------- */
+function buildHand() {
+  hand.innerHTML = '';
+  currentCards().forEach((p, i) => {
+    const el = document.createElement('div');
+    el.className = 'card dealt-in';
+    el.dataset.cardId = p.id;
+    el.setAttribute('role', 'button');
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('aria-label', 'Play card: ' + p.title);
+    el.innerHTML = cardFrontHTML(p);
+    el.style.animationDelay = (i * 0.09) + 's';
+    hand.appendChild(el);
+    attachDrag(el);
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); playCard(p.id); }
+    });
+  });
+  layoutHand();
+}
+
+/* fan the cards; the card being dragged (skipEl) keeps its drag transform */
+function layoutHand(skipEl) {
+  const cards = [...hand.children].filter(c => !c.classList.contains('in-play'));
+  const n = cards.length;
+  cards.forEach((el, i) => {
+    el.style.zIndex = 10 + i;
+    if (el === skipEl || el.classList.contains('dragging')) return;
+    const t = n === 1 ? 0 : (i / (n - 1)) - 0.5;   // -0.5 … 0.5
+    const spread = Math.min(30, n * 7);              // total degrees
+    const gap    = Math.min(120, 900 / n);           // px between cards
+    const rot  = t * spread;
+    const x    = t * gap * n * 0.55;
+    const lift = Math.abs(t) * Math.abs(t) * 320;    // arc dip at edges
+    el.style.transform = `translate(${x}px, ${lift * 0.18}px) rotate(${rot}deg)`;
+    el.dataset.homeTransform = el.style.transform;
+  });
+}
+
+/* ---------- drag logic (pointer events: mouse + touch) ---------- */
+function attachDrag(el) {
+  let startX = 0, startY = 0, moved = false, grabDX = 0, grabDY = 0;
+
+  el.addEventListener('pointerdown', e => {
+    if (activeDragEl) return;
+    e.preventDefault();
+    el.setPointerCapture(e.pointerId);
+    startX = e.clientX; startY = e.clientY;
+    moved = false;
+    const r = el.getBoundingClientRect();
+    grabDX = e.clientX - r.left;
+    grabDY = e.clientY - r.top;
+  });
+
+  el.addEventListener('pointermove', e => {
+    if (!el.hasPointerCapture(e.pointerId)) return;
+    const dx = e.clientX - startX, dy = e.clientY - startY;
+    if (!moved && Math.hypot(dx, dy) > 8) {
+      moved = true;
+      beginDrag(el);
+    }
+    if (moved) moveDrag(el, e.clientX - grabDX, e.clientY - grabDY, e.clientX, e.clientY);
+  });
+
+  el.addEventListener('pointerup', e => {
+    if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
+    if (moved) {
+      endDrag(el, e.clientX, e.clientY);
+    } else {
+      playCard(el.dataset.cardId);   // simple click/tap
+    }
+    moved = false;
+  });
+
+  el.addEventListener('pointercancel', () => {
+    if (activeDragEl === el) returnToHand(el);
+    moved = false;
+  });
+}
+
+let activeDragEl = null;
+
+function beginDrag(el) {
+  activeDragEl = el;
+  el.classList.remove('dealt-in', 'returning');
+  el.classList.add('dragging');
+  handHint.style.opacity = 0;
+}
+
+function moveDrag(el, x, y, px, py) {
+  el.style.transform = `translate(${x}px, ${y}px) rotate(4deg)`;
+  const over = pointInRect(px, py, field.getBoundingClientRect());
+  field.classList.toggle('highlight', over);
+}
+
+function endDrag(el, px, py) {
+  field.classList.remove('highlight');
+  const over = pointInRect(px, py, field.getBoundingClientRect());
+  if (over) {
+    el.classList.remove('dragging');
+    el.style.transform = '';
+    activeDragEl = null;
+    playCard(el.dataset.cardId);
+  } else {
+    returnToHand(el);
+  }
+}
+
+function returnToHand(el) {
+  activeDragEl = null;
+  el.classList.remove('dragging');
+  el.classList.add('returning');
+  el.style.transform = el.dataset.homeTransform || '';
+  handHint.style.opacity = '';
+  setTimeout(() => el.classList.remove('returning'), 500);
+  layoutHand();
+}
+
+function pointInRect(x, y, r) {
+  return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+}
+
+/* ---------- play a card onto the table ---------- */
+function playCard(cardId) {
+  const p = currentCards().find(c => c.id === cardId);
+  if (!p) return;
+
+  // return any card already on the table to the hand
+  if (activeCardId) restoreHandCard(activeCardId);
+  activeCardId = cardId;
+
+  // hide it in the hand
+  const handCard = hand.querySelector(`[data-card-id="${cardId}"]`);
+  if (handCard) handCard.classList.add('in-play');
+  layoutHand();
+
+  // fill the table card + detail sheet
+  playedFront.innerHTML = cardFrontHTML(p);
+  if (mode === 'projects') {
+    detail.innerHTML = `
+      <div class="kicker">${p.type} · ${p.year}</div>
+      <h2>${p.title}</h2>
+      <p>${p.description}</p>
+      <div class="tags">${p.tags.map(t => `<span>${t}</span>`).join('')}</div>
+      <div class="actions">
+        ${p.tasks && p.tasks.length ? `<button class="btn btn-primary" id="playBtn">▶ Play — My Tasks</button>` : ''}
+        <a class="btn btn-ghost" href="${p.link}" target="_blank" rel="noopener">${p.linkLabel}</a>
+        ${p.link2 ? `<a class="btn btn-ghost" href="${p.link2}" target="_blank" rel="noopener">${p.link2Label}</a>` : ''}
+        <button class="btn btn-ghost" id="returnBtn">Return to hand</button>
+      </div>`;
+    const playBtn = detail.querySelector('#playBtn');
+    if (playBtn) playBtn.addEventListener('click', () => enterTaskMode(p));
+  } else {
+    detail.innerHTML = `
+      <div class="kicker">${taskProject.title} · ${taskProject.year}</div>
+      <h2>${p.title}</h2>
+      <p>${p.description}</p>
+      <div class="actions">
+        <button class="btn btn-ghost" id="returnBtn">Return to hand</button>
+        <button class="btn btn-ghost" id="allProjectsBtn">◂ All Projects</button>
+      </div>`;
+    detail.querySelector('#allProjectsBtn').addEventListener('click', exitTaskMode);
+  }
+  detail.querySelector('#returnBtn').addEventListener('click', clearTable);
+
+  // flip animation: show back first, then flip to front
+  playedCard.classList.remove('flipped');
+  field.classList.add('occupied');
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => playedCard.classList.add('flipped'))
+  );
+}
+
+function restoreHandCard(cardId) {
+  const c = hand.querySelector(`[data-card-id="${cardId}"]`);
+  if (c) c.classList.remove('in-play');
+}
+
+function clearTable() {
+  if (activeCardId) restoreHandCard(activeCardId);
+  activeCardId = null;
+  field.classList.remove('occupied');
+  playedCard.classList.remove('flipped');
+  handHint.style.opacity = '';
+  layoutHand();
+}
+
+/* ---------- task mode: project card moves to the top, hand re-deals as tasks ---------- */
+function enterTaskMode(project) {
+  taskProject = project;
+  taskCards = project.tasks.map((t, i) => ({
+    ...t,
+    id: project.id + '::task-' + i,
+    type: 'Task ' + (i + 1) + ' of ' + project.tasks.length,
+    artBg: project.artBg
+  }));
+  mode = 'tasks';
+  clearTable();
+
+  // banner = the played project card, now sitting at the top of the field
+  pbThumb.innerHTML = p_bannerArt(project);
+  pbTitle.textContent = project.title;
+  pbSub.textContent = project.type + ' · ' + project.year;
+  field.classList.add('task-mode');
+
+  fieldMsg.textContent = 'Drag a task card onto the table';
+  fieldSub.textContent = '— what I did on ' + project.title + ' —';
+  handHint.textContent = 'Task cards — pick one';
+  buildHand();
+}
+
+function p_bannerArt(project) {
+  if (project.img && project.img2) {
+    return `<img src="${project.img}" alt="" style="width:50%">` +
+           `<img src="${project.img2}" alt="" style="width:50%">`;
+  }
+  if (project.img) return `<img src="${project.img}" alt="">`;
+  return `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${project.artBg}">${project.art}</div>`;
+}
+
+function exitTaskMode() {
+  mode = 'projects';
+  taskProject = null;
+  taskCards = [];
+  clearTable();
+  field.classList.remove('task-mode');
+  fieldMsg.textContent = 'Drag a card onto the table';
+  fieldSub.textContent = '— or click a card to play it —';
+  handHint.textContent = 'Your hand — pick a project';
+  buildHand();
+}
+
+pbBack.addEventListener('click', exitTaskMode);
+
+/* Esc: clear the table first; if the table is already clear, leave task mode */
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (field.classList.contains('occupied')) clearTable();
+  else if (mode === 'tasks') exitTaskMode();
+});
+
+buildHand();
+window.addEventListener('resize', () => layoutHand());
+</script>
+</body>
+</html>
