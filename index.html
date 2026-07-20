@@ -590,8 +590,6 @@ const PROJECTS = [
     artBg: 'linear-gradient(140deg, #7c3aed, #db2777)',
     description: 'Owning the full design lifecycle of globally scaled casual and hyper-casual puzzle & sorting titles, from concept to live-ops. I design core mechanics, difficulty curves, and meta-progression (rewards, missions, events), balance the in-game economy with a data-driven approach to lift D1–D7 retention, and tune hybrid IAP + ad monetization to grow LTV and support UA scaling.',
     tags: ['Live-ops', 'Economy Balance', 'Meta-progression', 'Hybrid Monetization', 'GDDs'],
-    link: '#',
-    linkLabel: 'View Project',
     tasks: [
       { title: 'Core Loop & Difficulty', art: '🔄', description: 'Designed core mechanics and progression systems for sorting/logic games — game flow, difficulty curves, and pacing tuned to stay challenging but fair from the first session onward.' },
       { title: 'Meta-progression', art: '🏆', description: 'Designed the meta layer — rewards, missions, and live events that give players long-term goals beyond the core puzzle loop.' },
@@ -609,8 +607,6 @@ const PROJECTS = [
     artBg: 'linear-gradient(140deg, #334155, #0f172a)',
     description: 'Leading design of core systems, gameplay mechanics, and character ability trees for a high-fidelity AA experience in development. I implement complex gameplay features directly in Unreal Engine 5 with a focus on modularity and performance, rapidly prototype new features, and keep systems and character stats in tight balance for polished "game feel".',
     tags: ['Unreal Engine 5', 'Systems Design', 'Ability Trees', 'Prototyping', 'Balancing'],
-    link: '#',
-    linkLabel: 'View Project',
     tasks: [
       { title: 'Core Systems Design', art: '🧠', description: 'Leading the design of core systems, gameplay mechanics, and character ability trees for a high-fidelity AA experience.' },
       { title: 'UE5 Implementation', art: '⚙️', description: 'Directly implementing complex gameplay features in Unreal Engine 5 with a focus on modularity and performance.' },
@@ -628,8 +624,6 @@ const PROJECTS = [
     artBg: 'linear-gradient(140deg, #166534, #052e16)',
     description: 'Three undisclosed AA projects at Virtuos Sparx*. On a 3rd-person multiplayer shooter I owned system, mechanic, and character ability design and implemented most gameplay abilities. On a survival game I designed progression, crafting, base-building, and monster capture/taming systems. I also built a 3-phase boss fight end-to-end, implementing its combat behavior with Unreal Behavior Trees.',
     tags: ['Unreal Engine 5', 'Unity 5', 'Multiplayer', 'Boss Design', 'Behavior Trees', 'Figma'],
-    link: '#',
-    linkLabel: 'View Project',
     tasks: [
       { title: 'Shooter Ability Design', art: '🔫', description: 'On an undisclosed 3rd-person multiplayer shooter (2025): responsible for system design, mechanic design, and character ability design — and implemented the majority of gameplay mechanics and abilities myself.' },
       { title: 'Multiplayer Balance', art: '⚖️', description: 'Focused on multiplayer functionality and maintaining balance between systems and characters across the roster.' },
@@ -941,7 +935,7 @@ function playCard(cardId) {
       <div class="tags">${p.tags.map(t => `<span>${t}</span>`).join('')}</div>
       <div class="actions">
         ${p.tasks && p.tasks.length ? `<button class="btn btn-primary" id="playBtn">▶ Play — My Tasks</button>` : ''}
-        <a class="btn btn-ghost" href="${p.link}" target="_blank" rel="noopener">${p.linkLabel}</a>
+        ${p.link ? `<a class="btn btn-ghost" href="${p.link}" target="_blank" rel="noopener">${p.linkLabel}</a>` : ''}
         ${p.link2 ? `<a class="btn btn-ghost" href="${p.link2}" target="_blank" rel="noopener">${p.link2Label}</a>` : ''}
         <button class="btn btn-ghost" id="returnBtn">Return to hand</button>
       </div>`;
