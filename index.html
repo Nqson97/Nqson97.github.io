@@ -30,9 +30,10 @@
     height: 100%;
     overflow: hidden;
     font-family: var(--font-body);
+    /* dark overlay keeps text readable over the purple grunge texture */
     background:
-      radial-gradient(1200px 700px at 50% -10%, #1c2340 0%, transparent 60%),
-      radial-gradient(900px 500px at 85% 110%, #251a33 0%, transparent 55%),
+      linear-gradient(180deg, rgba(10, 10, 22, 0.45), rgba(8, 8, 18, 0.72)),
+      url('assets/bg.jpg') center / cover no-repeat fixed,
       linear-gradient(180deg, var(--bg-1), var(--bg-2));
     color: var(--ink);
     user-select: none;
@@ -499,7 +500,7 @@
      ============================================================ */
   @media (max-width: 760px) {
     :root { --card-w: 104px; --card-h: 150px; }
-    html, body { overflow-y: auto; }
+    html, body { overflow-y: auto; background-attachment: scroll; }
     header { padding-top: 18px; }
     .hand-area { height: 192px; }
     .hand { bottom: 26px; }
