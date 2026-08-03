@@ -599,9 +599,13 @@ const PROJECTS = [
     year: '2026',
     art: '🎮',
     artBg: 'linear-gradient(140deg, #0ea5e9, #312e81)',
-    description: 'A collection of personal demos and prototypes showcasing my design and technical skills hands-on. Task cards for this project are coming soon.',
-    tags: ['Prototypes', 'Game Design', 'Coming Soon'],
-    tasks: []
+    description: 'A collection of personal demos and design work showcasing my craft hands-on. Play this card to explore the individual pieces.',
+    tags: ['Prototypes', 'Creature Design', 'Documentation'],
+    tasks: [
+      { title: 'Creature Design — The Spikes Master', art: '👹', img: 'assets/creature-spikes-master.jpg',
+        description: 'Complete boss design document for "The Spikes Master" — a hulking zombie covered in regenerating spikes that lairs in a chemical factory. Covers visual direction, movement and charge attacks, spike-explosion combat, a two-phase arena fight with parkour-driven counterplay (venting the chemical zones that speed his regeneration), and how players break his thorn armour to deal damage.',
+        link: 'assets/docs/creature-design-spikes-master.pdf', linkLabel: '📄 View Design Doc' }
+    ]
   },
   {
     id: 'puzzle-titles',
@@ -974,6 +978,7 @@ function playCard(cardId) {
       <h2>${p.title}</h2>
       <p>${p.description}</p>
       <div class="actions">
+        ${p.link ? `<a class="btn btn-primary" href="${p.link}" target="_blank" rel="noopener">${p.linkLabel || 'View'}</a>` : ''}
         <button class="btn btn-ghost" id="returnBtn">Return to hand</button>
         <button class="btn btn-ghost" id="allProjectsBtn">◂ All Projects</button>
       </div>`;
