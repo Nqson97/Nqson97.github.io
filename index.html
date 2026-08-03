@@ -309,6 +309,14 @@
     color: var(--gold);
   }
   .detail .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .detail video {
+    width: 100%;
+    max-height: 250px;
+    border-radius: 10px;
+    border: 1px solid var(--gold-soft);
+    background: #000;
+    margin-bottom: 14px;
+  }
   .btn {
     font-family: var(--font-body);
     font-size: 12.5px;
@@ -604,7 +612,10 @@ const PROJECTS = [
     tasks: [
       { title: 'Creature Design — The Spikes Master', art: '👹', img: 'assets/creature-spikes-master.jpg',
         description: 'Complete boss design document for "The Spikes Master" — a hulking zombie covered in regenerating spikes that lairs in a chemical factory. Covers visual direction, movement and charge attacks, spike-explosion combat, a two-phase arena fight with parkour-driven counterplay (venting the chemical zones that speed his regeneration), and how players break his thorn armour to deal damage.',
-        link: 'assets/docs/creature-design-spikes-master.pdf', linkLabel: '📄 View Design Doc' }
+        link: 'assets/docs/creature-design-spikes-master.pdf', linkLabel: '📄 View Design Doc' },
+      { title: 'Cinematics — Training Sequence', art: '🎬', img: 'assets/cine-training-thumb.jpg',
+        description: 'An in-engine cinematic training piece: an 80-second sci-fi sequence covering camera work, shot composition, staging, and character blocking. Watch it right here.',
+        video: 'assets/videos/cine-training.mp4', videoPoster: 'assets/cine-training-thumb.jpg' }
     ]
   },
   {
@@ -977,6 +988,7 @@ function playCard(cardId) {
       <div class="kicker">${taskProject.title} · ${taskProject.year}</div>
       <h2>${p.title}</h2>
       <p>${p.description}</p>
+      ${p.video ? `<video controls preload="metadata" playsinline poster="${p.videoPoster || ''}" src="${p.video}"></video>` : ''}
       <div class="actions">
         ${p.link ? `<a class="btn btn-primary" href="${p.link}" target="_blank" rel="noopener">${p.linkLabel || 'View'}</a>` : ''}
         <button class="btn btn-ghost" id="returnBtn">Return to hand</button>
