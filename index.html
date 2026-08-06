@@ -615,7 +615,10 @@ const PROJECTS = [
         link: 'assets/docs/creature-design-spikes-master.pdf', linkLabel: '📄 View Design Doc' },
       { title: 'Cinematics — Training Sequence', art: '🎬', img: 'assets/cine-training-thumb.jpg',
         description: 'An in-engine cinematic training piece: an 80-second sci-fi sequence covering camera work, shot composition, staging, and character blocking. Watch it right here.',
-        video: 'assets/videos/cine-training.mp4', videoPoster: 'assets/cine-training-thumb.jpg' }
+        video: 'assets/videos/cine-training.mp4', videoPoster: 'assets/cine-training-thumb.jpg' },
+      { title: 'FriendSlopGDD', art: '🐑', artBg: 'linear-gradient(140deg, #0284c7, #1e3a5f)',
+        description: 'Full game design document for "Sea of Sheep" — a 1–4 player co-op seafaring adventure where friends crew a single ship and sail a bounded, escalating sea to reach Sanctuary. 16 pages covering design pillars, the voyage structure, crew stations, mechanics, progression, threats, multiplayer design, and scope/roadmap for a Unity PC build.',
+        link: 'assets/docs/sea-of-sheep-gdd.pdf', linkLabel: '📄 View GDD' }
     ]
   },
   {
@@ -1027,7 +1030,7 @@ function enterTaskMode(project) {
     ...t,
     id: project.id + '::task-' + i,
     type: 'Task ' + (i + 1) + ' of ' + project.tasks.length,
-    artBg: project.artBg
+    artBg: t.artBg || project.artBg
   }));
   mode = 'tasks';
   clearTable();
