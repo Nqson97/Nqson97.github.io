@@ -317,6 +317,14 @@
     background: #000;
     margin-bottom: 14px;
   }
+  .detail .yt-embed {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--gold-soft);
+    border-radius: 10px;
+    background: #000;
+    margin-bottom: 14px;
+  }
   .btn {
     font-family: var(--font-body);
     font-size: 12.5px;
@@ -618,7 +626,10 @@ const PROJECTS = [
         video: 'assets/videos/cine-training.mp4', videoPoster: 'assets/cine-training-thumb.jpg' },
       { title: 'FriendSlopGDD', art: '🐑', artBg: 'linear-gradient(140deg, #0284c7, #1e3a5f)',
         description: 'Full game design document for "Sea of Sheep" — a 1–4 player co-op seafaring adventure where friends crew a single ship and sail a bounded, escalating sea to reach Sanctuary. 16 pages covering design pillars, the voyage structure, crew stations, mechanics, progression, threats, multiplayer design, and scope/roadmap for a Unity PC build.',
-        link: 'assets/docs/sea-of-sheep-gdd.pdf', linkLabel: '📄 View GDD' }
+        link: 'assets/docs/sea-of-sheep-gdd.pdf', linkLabel: '📄 View GDD' },
+      { title: 'Epic Mega Jam 2025', art: '⚡', img: 'assets/epic-megajam-2025-thumb.jpg',
+        description: 'Our team entry for the Epic Mega Jam 2025, built in Unreal Engine. I worked on the game design — core loop, mechanics, and pacing under jam constraints — and implemented gameplay features in Blueprint. Watch the gameplay video below.',
+        ytEmbed: 'https://www.youtube.com/embed/rs2XTRQCDBs' }
     ]
   },
   {
@@ -992,6 +1003,7 @@ function playCard(cardId) {
       <h2>${p.title}</h2>
       <p>${p.description}</p>
       ${p.video ? `<video controls preload="metadata" playsinline poster="${p.videoPoster || ''}" src="${p.video}"></video>` : ''}
+      ${p.ytEmbed ? `<iframe class="yt-embed" src="${p.ytEmbed}" title="${p.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>` : ''}
       <div class="actions">
         ${p.link ? `<a class="btn btn-primary" href="${p.link}" target="_blank" rel="noopener">${p.linkLabel || 'View'}</a>` : ''}
         <button class="btn btn-ghost" id="returnBtn">Return to hand</button>
