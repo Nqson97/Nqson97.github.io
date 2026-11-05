@@ -35,15 +35,16 @@ Everything lives in **one file**: `index.html` (~1050+ lines). No build step, no
    6. Survival Craft Recipe System (design doc PDF, tiered crafting unlocks)
    7. Simple UE Combat (links out to the `ActionLikeSouls` GitHub repo — UE 5.6, combo combat, State Tree AI, day-night cycle)
    8. Giant Drop — Full GDD (design doc PDF, vampire-survivors roguelite)
-2. **Casual Puzzle & Sorting Titles** (`puzzle-titles`) — Prime Tech work, year `2026` (ended; CV lists it as a past 2026 role), 5 tasks, no images (emoji only).
-3. **Undisclosed AA Title** (`bdg-aa-title`) — Big Dumb Game, `2026 – Now`, 5 tasks, no images.
-4. **Marvel's Wolverine** (`marvels-wolverine`) — added Oct 2026 from the updated CV: Environment Artist, client Insomniac Games, 3 emoji-only tasks. Card art = official PlayStation key art (`image.api.playstation.com/...?w=640`, verified no hotlink block); link = playstation.com product page.
-5. **Shooter, Survival & Boss Design** (`sparx-aa-projects`) — 5 tasks, no images. Role label is "Game / Tech Designer" (CV: survival game = Game Designer, shooter + boss = Technical Designer).
-6. **BloodLoop** (`bloodloop`) — 3 tasks, images hotlinked from bloodloop.com (see below).
-7. **Mahokenshi** (`mahokenshi`) — 4 tasks, images from mahokenshi.com.
-8. **Midnight Suns** (`midnight-suns`) — 4 tasks, images from assets.2k.com. (The CV misspells it "Midnight Sun"; the site uses the real title.)
-9. **SpongeBob: The Cosmic Shake** (`cosmic-shake`) — 3 tasks, images from cosmicshake.thqnordic.com.
-10. **Little Hope & House of Ashes** (`dark-pictures`) — 4 tasks, images from thedarkpictures.com.
+2. **Unannounced TPS → FPS Conversion** (`virtuos-kl-fps`) — added Nov 2026 from the newest CV: 3C (Camera/Character/Controls) Designer at Virtuos Kuala Lumpur (Remote), `2026 – Now`, 4 emoji-only tasks (Camera, Character & Locomotion, Controls & Aim, Cross-team Collaboration). Sits right after Demo Work as the newest role. Tags use generic "Unreal Engine" + "Claude" because the CV tag line reads "UNREAL ENGINE 6 CLAUDE" (probably a typo for 5 — unconfirmed with the user).
+3. **Casual Puzzle & Sorting Titles** (`puzzle-titles`) — Prime Tech work, year `2026` (ended; CV lists it as a past 2026 role), 5 tasks, no images (emoji only).
+4. **Undisclosed AA Title** (`bdg-aa-title`) — Big Dumb Game (Freelance), `2026 – Now`, 5 tasks, no images.
+5. **Marvel's Wolverine** (`marvels-wolverine`) — added Oct 2026 from the updated CV: Environment Artist, client Insomniac Games, year `2025` (CV corrected it from 2026), 3 emoji-only tasks. Card art = official PlayStation key art (`image.api.playstation.com/...?w=640`, verified no hotlink block); link = playstation.com product page.
+6. **Shooter, Survival & Boss Design** (`sparx-aa-projects`) — 5 tasks, no images. Role label is "Game / Tech Designer" (CV: survival game = Game Designer, shooter + boss = Technical Designer).
+7. **BloodLoop** (`bloodloop`) — 3 tasks, images hotlinked from bloodloop.com (see below).
+8. **Mahokenshi** (`mahokenshi`) — 4 tasks, images from mahokenshi.com.
+9. **Midnight Suns** (`midnight-suns`) — 4 tasks, images from assets.2k.com. (The CV misspells it "Midnight Sun"; the site uses the real title.)
+10. **SpongeBob: The Cosmic Shake** (`cosmic-shake`) — 3 tasks, images from cosmicshake.thqnordic.com.
+11. **Little Hope & House of Ashes** (`dark-pictures`) — 4 tasks, images from thedarkpictures.com.
 
 Data comes from the user's CV: first `SeniorGameDesign_NguyenQuocSon_CV_Eng.pdf`, re-synced Oct 2026 from `Son Nguyen Quoc - Resume.pdf` (Downloads). Card art for the CV-sourced game projects was found via web search of official title/key art and character art (all URLs verified 200 before use).
 
