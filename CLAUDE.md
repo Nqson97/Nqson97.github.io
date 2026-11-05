@@ -35,7 +35,7 @@ Everything lives in **one file**: `index.html` (~1050+ lines). No build step, no
    6. Survival Craft Recipe System (design doc PDF, tiered crafting unlocks)
    7. Simple UE Combat (links out to the `ActionLikeSouls` GitHub repo — UE 5.6, combo combat, State Tree AI, day-night cycle)
    8. Giant Drop — Full GDD (design doc PDF, vampire-survivors roguelite)
-2. **Unannounced TPS → FPS Conversion** (`virtuos-kl-fps`) — added Nov 2026 from the newest CV: 3C (Camera/Character/Controls) Designer at Virtuos Kuala Lumpur (Remote), `2026 – Now`, 4 emoji-only tasks (Camera, Character & Locomotion, Controls & Aim, Cross-team Collaboration). Sits right after Demo Work as the newest role. Tags use generic "Unreal Engine" + "Claude" because the CV tag line reads "UNREAL ENGINE 6 CLAUDE" (probably a typo for 5 — unconfirmed with the user).
+2. **Unannounced TPS → FPS Conversion** (`virtuos-kl-fps`) — added Nov 2026 from the newest CV: 3C (Camera/Character/Controls) Designer at Virtuos Kuala Lumpur (Remote), `2026 – Now`, 4 emoji-only tasks (Camera, Character & Locomotion, Controls & Aim, Cross-team Collaboration). Sits right after Demo Work as the newest role. Engine tag is just `UE` (no version) — the CV tag line reads "UNREAL ENGINE 6 CLAUDE"; the user said to leave it as UE.
 3. **Casual Puzzle & Sorting Titles** (`puzzle-titles`) — Prime Tech work, year `2026` (ended; CV lists it as a past 2026 role), 5 tasks, no images (emoji only).
 4. **Undisclosed AA Title** (`bdg-aa-title`) — Big Dumb Game (Freelance), `2026 – Now`, 5 tasks, no images.
 5. **Marvel's Wolverine** (`marvels-wolverine`) — added Oct 2026 from the updated CV: Environment Artist, client Insomniac Games, year `2025` (CV corrected it from 2026), 3 emoji-only tasks. Card art = official PlayStation key art (`image.api.playstation.com/...?w=640`, verified no hotlink block); link = playstation.com product page.
@@ -48,7 +48,7 @@ Everything lives in **one file**: `index.html` (~1050+ lines). No build step, no
 
 Data comes from the user's CV: first `SeniorGameDesign_NguyenQuocSon_CV_Eng.pdf`, re-synced Oct 2026 from `Son Nguyen Quoc - Resume.pdf` (Downloads). Card art for the CV-sourced game projects was found via web search of official title/key art and character art (all URLs verified 200 before use).
 
-CV items deliberately **not** on the site: the references section (it lists two third parties' personal email/phone — never publish those), education, skills list, the 2018 Tester role and thesis (no card fits them). The CV tags the shooter and survival projects "Unity Engine 5", which is almost certainly a typo for Unreal Engine 5; the site still carries the `Unity 5` tag from the CV — confirm with the user before changing it. The header `Resume` link is still a `#` placeholder because the CV PDF includes those references; host a references-free copy if the user wants it linked.
+CV items deliberately **not** on the site: the references section as a card (it lists two third parties' personal email/phone; they are only exposed via the full CV PDF the user chose to publish), education, skills list, the 2018 Tester role and thesis (no card fits them). The CV tags the shooter and survival projects "Unity Engine 5", which is almost certainly a typo for Unreal Engine 5; the site still carries the `Unity 5` tag from the CV — confirm with the user before changing it. The header `Resume` link now serves the full CV PDF (`assets/docs/son-nguyen-quoc-resume.pdf`), references included, at the user's explicit request.
 
 ## Recurring workflow for "add a new task with this doc/video"
 
@@ -119,6 +119,6 @@ Created from `D:\Project\Test\ActionLikeSouls\` (a local Unreal Engine 5.6 proje
 
 ## Open / offered-but-undecided items
 
-- Header "Resume" link is still a `#` placeholder — never given an actual resume file/link.
+- Header "Resume" link points to `assets/docs/son-nguyen-quoc-resume.pdf` — the full CV PDF, **including the two references' personal email/phone**, published at the user's explicit request (Nov 2026). To update the CV, overwrite that file with the new PDF (keep the filename) and push; no code change needed.
 - Offered once (not accepted or declined): swapping the 🃏 field-hint glyph for ♠ (user's system renders 🃏 as a grey box/tofu).
 - No attribution line added for the purple grunge background image (`https://img.magnific.com/...`) — user never asked for one, but it's sourced from a stock/free image site.
